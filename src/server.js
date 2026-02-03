@@ -3,6 +3,11 @@ import express from "express";
 const app = express();
 const PORT = 3000;
 
+app.use((req, res, next) => {
+  console.log(`Time: ${new Date().toLocaleString()}`);
+  next();
+});
+
 app.get('/', (req, res) => {
   res.status(200).json({ message: 'Hello world' });
 });
