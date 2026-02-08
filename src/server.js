@@ -1,9 +1,13 @@
+import { Student } from './models/student.js';
+
+import 'dotenv/config';
 import express from "express";
 import cors from "cors";
 import pino from 'pino-http';
+import { connectMongoDB } from './db/connectMongoDB.js';
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT ?? 3030;
 
 // Middleware
 app.use(express.json());
@@ -22,7 +26,7 @@ app.use(
       },
     },
   }),
-); 
+);
 
 // Логування часу
 app.use((req, res, next) => {
@@ -41,6 +45,25 @@ app.get('/test-error', (req, res) => {
   throw new Error('Something went wrong');
 });
 
+// Маршрут: отримати всіх студентів
+app.get('/students', async (req, res) => {
+  const students = await Student.find();
+  res.status(200).json(students);
+});
+
+// Маршрут: отримати одного студента за id
+app.get('/students/:studentId', async (req, res) => {
+  const { studentId } = req.params;
+  const student = await Student.findById(studentId);
+
+  if (!student) {
+    return res.status(404).json({
+      message: 'Student not found'
+    });
+  }
+  res.status(200).json(student);
+});
+
 // Middleware 404 (після всіх маршрутів)
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
@@ -54,6 +77,9 @@ app.use((err, req, res, next) => {
     error: err.message,
   });
 });
+
+// підключення до MongoDB
+await connectMongoDB();
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

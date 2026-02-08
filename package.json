@@ -2,6 +2,7 @@
   "name": "nodejs-app",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "nodemon src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -18,7 +19,9 @@
   },
   "dependencies": {
     "cors": "^2.8.6",
+    "dotenv": "^17.2.4",
     "express": "^5.2.1",
+    "mongoose": "^9.1.6",
     "pino-http": "^11.0.0",
     "pino-pretty": "^13.1.3"
   }
